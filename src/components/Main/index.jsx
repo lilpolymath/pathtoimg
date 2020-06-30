@@ -1,8 +1,8 @@
 import React from 'react';
-import Hero from './Hero';
+import Main from './Main';
 
 const index = () => {
-  return <Hero />;
+  return <Main />;
 };
 
 export default index;
