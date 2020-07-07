@@ -1,9 +1,13 @@
+main {
+  position: relative;
+}
+
 .hero {
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: 16px 0;
+  margin-top: 36px;
 }
 
 .left,
@@ -13,14 +17,19 @@
   flex-direction: column;
 }
 
+.left {
+  margin-top: 48px;
+  order: 1;
+}
+
 .main-text {
   font-size: 36px;
   line-height: 54px;
-  letter-spacing: -1px;
+  font-weight: 100;
 }
 
 .desc {
-  margin: 1.5em 0;
+  margin: 1em 0;
   font-size: 18px;
   line-height: 26px;
 }
@@ -31,17 +40,58 @@
 
 button {
   letter-spacing: 3px;
-  color: #4737ff;
   background-color: #4737ff;
-  outline: none !important;
-  border: 3px solid white;
+  outline: none;
+  border: none;
   margin-right: 2em;
   font-size: 14px;
-  height: 50px;
-  width: 160px;
+  height: 40px;
+  padding: 12px;
   color: white;
+  width: fit-content;
   text-transform: uppercase;
   font-weight: bold;
+}
+
+.upload-btn {
+  margin: 16px 0;
+  color: #4737ff;
+  background-color: white;
+  height: 40px;
+  letter-spacing: normal;
+}
+
+.upload {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.main {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  padding: 16px 24px;
+  background-color: #4737ff;
+  border-radius: 5px;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+}
+
+.main > p {
+  font-size: 18px;
+}
+
+form {
+  margin: 16px 0 0;
 }
 
 button:hover {
@@ -53,6 +103,10 @@ button:hover {
     flex-direction: row;
   }
 
+  .left {
+    order: 0;
+  }
+
   .main-text {
     font-size: 54px;
     line-height: 72px;
@@ -61,5 +115,9 @@ button:hover {
   .desc {
     font-size: 22px;
     line-height: 30px;
+  }
+
+  .main {
+    top: 300px;
   }
 }

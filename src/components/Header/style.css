@@ -11,5 +11,6 @@ header {
   font-size: 2em;
   line-height: 25px;
   padding: 12px 0;
-  font-weight: 700;
+  font-weight: 300;
+  letter-spacing: 2px;
 }

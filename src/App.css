@@ -10,3 +10,7 @@ body {
   padding: 0 16px;
   height: auto;
 }
+
+::selection {
+  background: red;
+}
