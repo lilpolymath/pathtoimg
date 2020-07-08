@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import Image from '../second.png';
 import axios from 'axios';
+import { Gluejar } from '@charliewilco/gluejar';
+
+import Image from '../second.png';
 
 export const Main = () => {
-  const [display, setDisplay] = useState('none');
+  const [display, setDisplay] = useState('inline-block');
   const [image, setImage] = useState(null);
   const [link, setLink] = useState('');
+  const [Links, setLinks] = useState([]);
 
   const onChange = e => {
     setImage(e.target.files[0]);
@@ -13,6 +16,16 @@ export const Main = () => {
 
   const onSubmit = e => {
     e.preventDefault();
+    console.log(image, 'images');
+    image && fileUpload(image);
+  };
+
+  const imgPaste = image => {
+    if (!image) {
+      return;
+    }
+    setDisplay('none');
+    setImage(image);
     console.log(image, 'images');
     image && fileUpload(image);
   };
@@ -28,7 +41,6 @@ export const Main = () => {
       method: 'post',
       url: `${endpoint}`,
       headers: {
-        'content-type': file.type,
         Authorization: 'Client-ID 11b31fa59eb3832',
       },
       data: form,
@@ -41,6 +53,8 @@ export const Main = () => {
         navigator.clipboard.writeText(link);
 
         setLink(link);
+        setLinks(Links.concat(link));
+        console.log('Links', Links);
       })
       .catch(err => console.log('error', err));
   };
@@ -53,27 +67,42 @@ export const Main = () => {
           <p className='desc'>
             Upload an image and get the link to it on Imgur.
           </p>
-          <button onClick={() => setDisplay('block')}>Upload Image</button>
-        </div>
-        <div className='right'>
-          <figure>
-            <img src={Image} className='image' alt='hero' />
-          </figure>
-        </div>
-      </section>
-      <section className='upload' style={{ display: display }}>
-        <div className='main'>
+          <div className='some'>
+            <img
+              alt='something'
+              style={{ display: display }}
+              src='https://img.icons8.com/ios/200/000000/pictures-folder.png'
+            />
+            <Gluejar
+              onPaste={files => imgPaste(files)}
+              onError={err => console.error(err)}
+            >
+              {({ images }) =>
+                images.length > 0 &&
+                images.map(image => (
+                  <img
+                    className='image preview'
+                    src={image}
+                    key={image}
+                    alt={`Pasted: ${image}`}
+                  />
+                ))
+              }
+            </Gluejar>
+          </div>
+
           <div className='form'>
-            <p>Select the image you want to upload.</p>
+            <p>OR</p>
             <form
               typeof='multipart/form-data'
               onSubmit={onSubmit}
               action='post'
             >
               <input accept='image/*' type='file' onChange={onChange} />
-              <button className='upload-btn' type='submit'>
-                Get Link
-              </button>
+
+              <div>
+                <button type='submit'>Get Link</button>
+              </div>
             </form>
           </div>
 
@@ -81,6 +110,38 @@ export const Main = () => {
             {link} {link && <p>Link has been copied to your clipboard</p>}
           </div>
         </div>
+        <div className='right'>
+          <figure>
+            <img src={Image} className='image' alt='hero' />
+          </figure>
+        </div>
+      </section>
+      <section className='path-list mr'>
+        <table>
+          <thead>
+            <tr>
+              <th>Recent Paths</th>
+            </tr>
+          </thead>
+          <tbody>
+            {link.length === 0 ? (
+              <tr>
+                <td className='empty'>(none)</td>
+              </tr>
+            ) : (
+              Links.map((link, index) => {
+                console.log(link);
+                return (
+                  <tr key={index}>
+                    <td>
+                      <a href={link}>{index + 1 + '. ' + link}</a>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </section>
     </main>
   );

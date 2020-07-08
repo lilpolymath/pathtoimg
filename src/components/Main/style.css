@@ -29,7 +29,7 @@ main {
 }
 
 .desc {
-  margin: 1em 0;
+  margin: 0.875em 0;
   font-size: 18px;
   line-height: 26px;
 }
@@ -38,12 +38,23 @@ main {
   width: 100%;
 }
 
+.some {
+  border: 2px solid black;
+  width: 200px;
+  margin: 16px 0px;
+  padding: 8px;
+}
+
+.empty {
+  text-align: center;
+}
+
 button {
   letter-spacing: 3px;
   background-color: #4737ff;
   outline: none;
   border: none;
-  margin-right: 2em;
+  margin: 1em 0px;
   font-size: 14px;
   height: 40px;
   padding: 12px;
@@ -51,14 +62,6 @@ button {
   width: fit-content;
   text-transform: uppercase;
   font-weight: bold;
-}
-
-.upload-btn {
-  margin: 16px 0;
-  color: #4737ff;
-  background-color: white;
-  height: 40px;
-  letter-spacing: normal;
 }
 
 .upload {
@@ -98,6 +101,36 @@ button:hover {
   transform: scale(1.1);
 }
 
+table,
+td {
+  border: 1px solid black;
+  font-size: 16px;
+  width: 100%;
+  padding: 5px;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+.path-list {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-direction: column;
+}
+
+.mr {
+  margin: 36px 0;
+}
+
+th {
+  background-color: #333;
+  color: #fff;
+  font-size: 20px;
+}
+
 @media screen and (min-width: 768px) {
   .hero {
     flex-direction: row;
@@ -119,5 +152,17 @@ button:hover {
 
   .main {
     top: 300px;
+  }
+
+  table {
+    width: 50%;
+  }
+
+  .path-list {
+    align-items: center;
+  }
+
+  .mr {
+    margin: 48px 0;
   }
 }
