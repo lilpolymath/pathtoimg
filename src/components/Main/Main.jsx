@@ -20,19 +20,21 @@ export const Main = () => {
     image && fileUpload(image);
   };
 
-  const imgPaste = async imageBlob => {
-    if (!imageBlob) {
-      return;
+  const imgPaste = imageBlob => {
+    console.log('imageBlob', imageBlob);
+
+    if (imageBlob.images.length !== 0) {
+      console.log(imageBlob);
+      setDisplay('none');
+
+      const image = new File([imageBlob], 'upload.png', {
+        type: 'image/png',
+        lastModified: new Date(),
+      });
+
+      console.log(image, 'images');
+      image && fileUpload(image);
     }
-    setDisplay('none');
-
-    const image = await new File([imageBlob], 'upload.png', {
-      type: 'image/png',
-      lastModified: new Date(),
-    });
-
-    console.log(image, 'images');
-    image && fileUpload(image);
   };
 
   const fileUpload = async file => {
@@ -70,7 +72,7 @@ export const Main = () => {
         <div className='left'>
           <h3 className='main-text'>Bit.ly but for images</h3>
           <p className='desc'>
-            Upload an image and get the link to it on Imgur.
+            Paste or Upload an image and get the link to it on Imgur.
           </p>
           <div className='some'>
             <img
