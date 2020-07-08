@@ -20,12 +20,17 @@ export const Main = () => {
     image && fileUpload(image);
   };
 
-  const imgPaste = image => {
-    if (!image) {
+  const imgPaste = async imageBlob => {
+    if (!imageBlob) {
       return;
     }
     setDisplay('none');
-    setImage(image);
+
+    const image = await new File([imageBlob], 'upload.png', {
+      type: 'image/png',
+      lastModified: new Date(),
+    });
+
     console.log(image, 'images');
     image && fileUpload(image);
   };
