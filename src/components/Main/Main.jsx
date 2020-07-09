@@ -102,8 +102,8 @@ export const Main = () => {
           </div>
 
           <div className='response'>
-            {<a href={link}>{link}</a>}{' '}
-            {!link && <p>Link has been copied to your clipboard</p>}
+            {<a href={link}>{link}</a>}
+            {link && <p>Link has been copied to your clipboard</p>}
           </div>
         </div>
       </section>
