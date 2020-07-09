@@ -1,66 +1,85 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import axios from 'axios';
-import { Gluejar } from '@charliewilco/gluejar';
+
+import useEventListener from '../../hooks/use-event-listener';
 
 export const Main = () => {
-  const [display, setDisplay] = useState('inline-block');
-
   const [loading, setLoading] = useState(false);
   const [link, setLink] = useState('');
   const [Links, setLinks] = useState([]);
 
-  const imgPaste = async imageBlob => {
-    setLoading(true);
-    console.log('imageBlob', imageBlob);
+  const acceptedFiles = ['image/gif', 'image/png', 'image/jpeg', 'image/bmp'];
 
-    if (imageBlob.images.length !== 0) {
-      console.log(imageBlob);
-      setDisplay('none');
-      const lastImage = imageBlob.images.slice(-1);
+  const fileUpload = useCallback(
+    async file => {
+      let form = new FormData();
 
-      fetch(lastImage)
+      console.log('file', file);
+
+      form.append('image', file, 'default.png');
+
+      const endpoint = 'https://api.imgur.com/3/image';
+
+      const config = {
+        method: 'post',
+        url: `${endpoint}`,
+        headers: {
+          Authorization: 'Client-ID 11b31fa59eb3832',
+          'content-type': 'multipart/form-data',
+        },
+        data: form,
+      };
+
+      console.log(config);
+
+      await axios(config)
+        .then(res => {
+          const { link } = res.data.data;
+          console.log('link', link);
+          navigator.clipboard.writeText(link);
+
+          setLink(link);
+          setLinks(Links.concat(link));
+
+          console.log('Links', Links);
+        })
+        .catch(err => console.log('error', err));
+
+      setLoading(false);
+    },
+    [Links]
+  );
+
+  const imgPaste = useCallback(
+    file => {
+      setLoading(true);
+      console.log('imageBlob', file);
+
+      fetch(file)
         .then(r => r.blob())
         .then(r => fileUpload(r));
-    }
-    return;
-  };
+    },
+    [fileUpload]
+  );
 
-  const fileUpload = async (file, name = 'default.png') => {
-    let form = new FormData();
+  const handle = useCallback(
+    ({ clipboardData }) => {
+      let URL = window.URL;
 
-    console.log('file', file);
+      for (let index = 1; index < clipboardData.items.length; index++) {
+        let type = clipboardData.items[index].type;
+        if (acceptedFiles.includes(type)) {
+          let blob = clipboardData.items[index].getAsFile();
+          let src = URL.createObjectURL(blob);
 
-    form.append('image', file, name);
+          imgPaste(src);
+        }
+      }
+    },
+    [acceptedFiles, imgPaste]
+  );
 
-    const endpoint = 'https://api.imgur.com/3/image';
-
-    const config = {
-      method: 'post',
-      url: `${endpoint}`,
-      headers: {
-        Authorization: 'Client-ID 11b31fa59eb3832',
-        'content-type': 'multipart/form-data',
-      },
-      data: form,
-    };
-
-    console.log(config);
-
-    // await axios(config)
-    //   .then(res => {
-    //     const { link } = res.data.data;
-    //     console.log('link', link);
-    //     navigator.clipboard.writeText(link);
-
-    //     setLink(link);
-    //     setLinks(Links.concat(link));
-
-    //     console.log('Links', Links);
-    //   })
-    //   .catch(err => console.log('error', err));
-
-    setLoading(false);
-  };
+  useEventListener('paste', handle);
 
   return (
     <main>
@@ -80,10 +99,6 @@ export const Main = () => {
             ) : (
               <p>Paste Here</p>
             )}
-            <Gluejar
-              onPaste={files => console.log(files)}
-              onError={err => console.error(err)}
-            ></Gluejar>
           </div>
 
           <div className='response'>
