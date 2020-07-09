@@ -2,46 +2,36 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Gluejar } from '@charliewilco/gluejar';
 
-import Image from '../second.png';
-
 export const Main = () => {
   const [display, setDisplay] = useState('inline-block');
-  const [image, setImage] = useState(null);
+
+  const [loading, setLoading] = useState(false);
   const [link, setLink] = useState('');
   const [Links, setLinks] = useState([]);
 
-  const onChange = e => {
-    setImage(e.target.files[0]);
-  };
-
-  const onSubmit = e => {
-    e.preventDefault();
-    console.log(image, 'images');
-    image && fileUpload(image);
-  };
-
-  const imgPaste = imageBlob => {
+  const imgPaste = async imageBlob => {
+    setLoading(true);
     console.log('imageBlob', imageBlob);
 
     if (imageBlob.images.length !== 0) {
       console.log(imageBlob);
       setDisplay('none');
+      const lastImage = imageBlob.images.slice(-1);
 
-      const image = new File([imageBlob], 'upload.png', {
-        type: 'image/png',
-        lastModified: new Date(),
-      });
-
-      console.log(image, 'images');
-      image && fileUpload(image);
+      fetch(lastImage)
+        .then(r => r.blob())
+        .then(r => fileUpload(r));
     }
+    return;
   };
 
-  const fileUpload = async file => {
+  const fileUpload = async (file, name = 'default.png') => {
     let form = new FormData();
 
-    form.append('image', file);
-    console.log(form);
+    console.log('file', file);
+
+    form.append('image', file, name);
+
     const endpoint = 'https://api.imgur.com/3/image';
 
     const config = {
@@ -49,78 +39,57 @@ export const Main = () => {
       url: `${endpoint}`,
       headers: {
         Authorization: 'Client-ID 11b31fa59eb3832',
+        'content-type': 'multipart/form-data',
       },
       data: form,
     };
 
-    await axios(config)
-      .then(res => {
-        const { link } = res.data.data;
-        console.log('link', link);
-        navigator.clipboard.writeText(link);
+    console.log(config);
 
-        setLink(link);
-        setLinks(Links.concat(link));
-        console.log('Links', Links);
-      })
-      .catch(err => console.log('error', err));
+    // await axios(config)
+    //   .then(res => {
+    //     const { link } = res.data.data;
+    //     console.log('link', link);
+    //     navigator.clipboard.writeText(link);
+
+    //     setLink(link);
+    //     setLinks(Links.concat(link));
+
+    //     console.log('Links', Links);
+    //   })
+    //   .catch(err => console.log('error', err));
+
+    setLoading(false);
   };
 
   return (
     <main>
       <section className='hero'>
-        <div className='left'>
+        <div className='path-list'>
           <h3 className='main-text'>Bit.ly but for images</h3>
           <p className='desc'>
             Paste or Upload an image and get the link to it on Imgur.
           </p>
-          <div className='some'>
+          <div className='some empty'>
             <img
               alt='something'
-              style={{ display: display }}
               src='https://img.icons8.com/ios/200/000000/pictures-folder.png'
             />
+            {loading ? (
+              <i className='fa fa-spinner fa-pulse' />
+            ) : (
+              <p>Paste Here</p>
+            )}
             <Gluejar
-              onPaste={files => imgPaste(files)}
+              onPaste={files => console.log(files)}
               onError={err => console.error(err)}
-            >
-              {({ images }) =>
-                images.length > 0 &&
-                images.map(image => (
-                  <img
-                    className='image preview'
-                    src={image}
-                    key={image}
-                    alt={`Pasted: ${image}`}
-                  />
-                ))
-              }
-            </Gluejar>
-          </div>
-
-          <div className='form'>
-            <p>OR</p>
-            <form
-              typeof='multipart/form-data'
-              onSubmit={onSubmit}
-              action='post'
-            >
-              <input accept='image/*' type='file' onChange={onChange} />
-
-              <div>
-                <button type='submit'>Get Link</button>
-              </div>
-            </form>
+            ></Gluejar>
           </div>
 
           <div className='response'>
-            {link} {link && <p>Link has been copied to your clipboard</p>}
+            {<a href={link}>{link}</a>}{' '}
+            {!link && <p>Link has been copied to your clipboard</p>}
           </div>
-        </div>
-        <div className='right'>
-          <figure>
-            <img src={Image} className='image' alt='hero' />
-          </figure>
         </div>
       </section>
       <section className='path-list mr'>
