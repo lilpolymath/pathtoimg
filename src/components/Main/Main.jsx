@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import pasteImage from 'paste-image';
 
@@ -53,27 +53,29 @@ export const Main = () => {
       .then(r => fileUpload(r));
   };
 
-  pasteImage.on('paste-image', function(image) {
-    imgPaste(image.src);
-  });
+  useEffect(() => {
+    pasteImage.on('paste-image', function(image) {
+      console.log(image);
+      imgPaste(image.src);
+    });
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <main>
       <section className='hero'>
         <div className='path-list'>
-          <h3 className='main-text'>Bit.ly but for images</h3>
-          <p className='desc'>
-            Paste or Upload an image and get the link to it on Imgur.
-          </p>
+          <h3 className='main-text'>Paste an image anywhere on this page.</h3>
+          <p className='desc'>Get an Imgur Link.</p>
+
           <div className='some empty'>
-            <img
-              alt='something'
-              src='https://img.icons8.com/ios/200/000000/pictures-folder.png'
-            />
             {loading ? (
               <i className='fa fa-spinner fa-pulse' />
             ) : (
-              <p>Paste Here</p>
+              <img
+                alt='something'
+                src='https://img.icons8.com/ios/200/000000/pictures-folder.png'
+              />
             )}
           </div>
 

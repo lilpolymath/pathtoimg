@@ -2,6 +2,10 @@ main {
   position: relative;
 }
 
+i {
+  font-size: 96px;
+}
+
 .hero {
   display: flex;
   align-items: center;
@@ -19,7 +23,7 @@ main {
 
 .main-text {
   font-size: 36px;
-  line-height: 54px;
+  line-height: 48px;
   font-weight: 100;
 }
 
@@ -34,7 +38,6 @@ main {
 }
 
 .some {
-  border: 2px solid black;
   width: 200px;
   margin: 16px 0px;
   padding: 4px;
