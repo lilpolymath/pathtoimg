@@ -10,8 +10,6 @@ export const Main = () => {
   const fileUpload = async file => {
     let form = new FormData();
 
-    console.log('file', file);
-
     form.append('image', file, 'default.png');
 
     const endpoint = 'https://api.imgur.com/3/image';
@@ -26,18 +24,14 @@ export const Main = () => {
       data: form,
     };
 
-    console.log(config);
-
     await axios(config)
       .then(res => {
         const { link } = res.data.data;
-        console.log('link', link);
         navigator.clipboard.writeText(link);
 
         setLink(link);
-        setLinks(Links.concat(link));
 
-        console.log('Links', Links);
+        setLinks(prevState => [...prevState, link]);
       })
       .catch(err => console.log('error', err));
 
@@ -51,7 +45,6 @@ export const Main = () => {
 
   const imgPaste = file => {
     setLoading(true);
-    console.log('imageBlob', file);
 
     fetch(file)
       .then(r => r.blob())
@@ -60,7 +53,6 @@ export const Main = () => {
 
   useEffect(() => {
     pasteImage.on('paste-image', function(image) {
-      console.log(image);
       imgPaste(image.src);
     });
     // eslint-disable-next-line
@@ -109,7 +101,6 @@ export const Main = () => {
               </tr>
             ) : (
               Links.map((link, index) => {
-                console.log(link);
                 return (
                   <tr key={index}>
                     <td>

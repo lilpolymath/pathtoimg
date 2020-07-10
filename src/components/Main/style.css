@@ -14,13 +14,6 @@ i {
   margin-top: 36px;
 }
 
-.left {
-  display: flex;
-  flex: 1;
-  justify-content: center;
-  flex-direction: column;
-}
-
 .main-text {
   font-size: 36px;
   line-height: 48px;
@@ -63,10 +56,6 @@ button {
 
 button:hover {
   transform: scale(1.1);
-}
-
-form {
-  margin: 16px 0 0;
 }
 
 table,
