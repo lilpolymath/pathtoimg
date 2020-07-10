@@ -1,85 +1,61 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-
-import useEventListener from '../../hooks/use-event-listener';
+import pasteImage from 'paste-image';
 
 export const Main = () => {
   const [loading, setLoading] = useState(false);
   const [link, setLink] = useState('');
   const [Links, setLinks] = useState([]);
 
-  const acceptedFiles = ['image/gif', 'image/png', 'image/jpeg', 'image/bmp'];
+  const fileUpload = async file => {
+    let form = new FormData();
 
-  const fileUpload = useCallback(
-    async file => {
-      let form = new FormData();
+    console.log('file', file);
 
-      console.log('file', file);
+    form.append('image', file, 'default.png');
 
-      form.append('image', file, 'default.png');
+    const endpoint = 'https://api.imgur.com/3/image';
 
-      const endpoint = 'https://api.imgur.com/3/image';
+    const config = {
+      method: 'post',
+      url: `${endpoint}`,
+      headers: {
+        Authorization: 'Client-ID 11b31fa59eb3832',
+        'content-type': 'multipart/form-data',
+      },
+      data: form,
+    };
 
-      const config = {
-        method: 'post',
-        url: `${endpoint}`,
-        headers: {
-          Authorization: 'Client-ID 11b31fa59eb3832',
-          'content-type': 'multipart/form-data',
-        },
-        data: form,
-      };
+    console.log(config);
 
-      console.log(config);
+    await axios(config)
+      .then(res => {
+        const { link } = res.data.data;
+        console.log('link', link);
+        navigator.clipboard.writeText(link);
 
-      await axios(config)
-        .then(res => {
-          const { link } = res.data.data;
-          console.log('link', link);
-          navigator.clipboard.writeText(link);
+        setLink(link);
+        setLinks(Links.concat(link));
 
-          setLink(link);
-          setLinks(Links.concat(link));
+        console.log('Links', Links);
+      })
+      .catch(err => console.log('error', err));
 
-          console.log('Links', Links);
-        })
-        .catch(err => console.log('error', err));
+    setLoading(false);
+  };
 
-      setLoading(false);
-    },
-    [Links]
-  );
+  const imgPaste = file => {
+    setLoading(true);
+    console.log('imageBlob', file);
 
-  const imgPaste = useCallback(
-    file => {
-      setLoading(true);
-      console.log('imageBlob', file);
+    fetch(file)
+      .then(r => r.blob())
+      .then(r => fileUpload(r));
+  };
 
-      fetch(file)
-        .then(r => r.blob())
-        .then(r => fileUpload(r));
-    },
-    [fileUpload]
-  );
-
-  const handle = useCallback(
-    ({ clipboardData }) => {
-      let URL = window.URL;
-
-      for (let index = 1; index < clipboardData.items.length; index++) {
-        let type = clipboardData.items[index].type;
-        if (acceptedFiles.includes(type)) {
-          let blob = clipboardData.items[index].getAsFile();
-          let src = URL.createObjectURL(blob);
-
-          imgPaste(src);
-        }
-      }
-    },
-    [acceptedFiles, imgPaste]
-  );
-
-  useEventListener('paste', handle);
+  pasteImage.on('paste-image', function(image) {
+    imgPaste(image.src);
+  });
 
   return (
     <main>
