@@ -44,6 +44,11 @@ export const Main = () => {
     setLoading(false);
   };
 
+  const mdFormat = () => {
+    let mdLink = `![image](${link})`;
+    navigator.clipboard.writeText(mdLink);
+  };
+
   const imgPaste = file => {
     setLoading(true);
     console.log('imageBlob', file);
@@ -81,7 +86,12 @@ export const Main = () => {
 
           <div className='response'>
             {<a href={link}>{link}</a>}
-            {link && <p>Link has been copied to your clipboard</p>}
+            {link && (
+              <div>
+                <p>Link has been copied to your clipboard</p>
+                <button onClick={mdFormat}>or Copy Markdown</button>
+              </div>
+            )}
           </div>
         </div>
       </section>

@@ -49,25 +49,24 @@ i {
 
 button {
   letter-spacing: 3px;
-  background-color: #4737ff;
+  background-color: black;
   outline: none;
   border: none;
   margin: 1em 0px;
   font-size: 14px;
-  height: 40px;
-  padding: 12px;
+  padding: 6px;
   color: white;
   width: fit-content;
   text-transform: uppercase;
   font-weight: bold;
 }
 
-form {
-  margin: 16px 0 0;
-}
-
 button:hover {
   transform: scale(1.1);
+}
+
+form {
+  margin: 16px 0 0;
 }
 
 table,
